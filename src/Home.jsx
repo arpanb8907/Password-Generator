@@ -8,23 +8,19 @@ export default function Home() {
   const [text,settext] = useState("")
 
   useEffect(()=>{
-    //console.log(num_checkbox);
-    generate_password()
-    
-  },[num_checkbox])
+    fun()
+  },[length,num_checkbox,char_checkbox])
 
-  useEffect(()=>{
-      //console.log(char_checkbox);
-      generate_password()
-      
-  },[char_checkbox])
-  useEffect(()=>{
-    
+  const fun = useCallback(()=>{
     generate_password()
-    
-  },[length])
+  },[length,num_checkbox,char_checkbox])
 
   const generate_password = ()=>{
+    
+    if(length<3){
+      settext("")
+      return 
+    }
     
     
     let str1 = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -60,6 +56,20 @@ export default function Home() {
   
     
   }
+  
+  const copypaste = () => {
+    if (text) {
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          alert('Text copied to clipboard!');
+        })
+        .catch(err => {
+          console.error('Failed to copy text: ', err);
+        });
+    }
+
+    //alert("copied")
+  }
 
 
   return (
@@ -76,26 +86,36 @@ export default function Home() {
         </div>
       
 
-      <div className="flex justify-center mt-3">
+      <div className="flex justify-center mt-3" >
         <div className="w-full max-w-md">
           <div className="flex items-center bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             <input
               type="text"
+              
               className="flex-1 border-none p-4 bg-gray-900 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 ease-in-out"
               placeholder=""
               aria-label="Recipient's username"
               value={text}
               onChange={(e)=>{
                 settext(e.target.value)
+                
+                
               }}
+              disabled
             />
             <button
-              className="bg-gradient-to-r from-green-400 to-teal-500 text-white p-4 rounded-r-lg font-semibold shadow-md hover:shadow-xl transition-transform duration-300 ease-in-out"
+              className="bg-gradient-to-r from-green-400 to-teal-500 text-white p-4 rounded-r-lg font-semibold shadow-md hover:shadow-xl transition-transform duration-300 ease-in-out cursor-pointer"
               type="button"
               id="button-addon2"
+
+              onClick={copypaste}
+              
             >
               Copy
             </button>
+
+
+
           </div>
 
           {/* Range Slider Section */}
@@ -115,6 +135,7 @@ export default function Home() {
                 
                 setlength(e.target.value)
                 
+                
               }}
             />
             <span className="ml-3 text-white">{length}</span>
@@ -126,12 +147,14 @@ export default function Home() {
                 <input type="checkbox" className="mr-1 accent-blue-500" value={num_checkbox} onChange={()=>{
                   setnum_checkbox(num_checkbox===true? false : true)
                   
+                  
                 }}/>
                 Numbers
               </label>
               <label className="flex items-center text-white">
                 <input type="checkbox" className="mr-1 accent-blue-500" value={char_checkbox} onChange={()=>{
                   setchar_checkbox(char_checkbox===true?false:true)
+                  
                  
                 }}/>
                 Characters
